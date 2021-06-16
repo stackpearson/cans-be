@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const Services = require('./services-model.js');
+const Cans = require('./cans-model.js');
 const restricted = require('../utils/restricted-endpoint.js');
 
 //api/services
@@ -8,7 +8,7 @@ const restricted = require('../utils/restricted-endpoint.js');
 router.get('/:id', restricted, (req, res) => {
     const { id } = req.params;
 
-    Services.findServices(id)
+    Cans.findCans(id)
         .then(services => {
             res.status(200).json(services)
         })
@@ -35,7 +35,7 @@ router.post('/', restricted, async (req, res) => {
     let vehicle_id = req.body.vehicle_id;
     let user_id = req.body.user_id;
 
-    const savedService = await Services.addServices(serviceDetails)
+    const savedService = await Cans.addServices(serviceDetails)
     
     const serviceRelation = {
         user_id: user_id,
@@ -43,7 +43,7 @@ router.post('/', restricted, async (req, res) => {
         service_id: savedService.id
     }
 
-    const savedRelation = await Services.addServiceRelation(serviceRelation)
+    const savedRelation = await Cans.addServiceRelation(serviceRelation)
     
     try {
         if (savedRelation) {
@@ -62,7 +62,7 @@ router.post('/', restricted, async (req, res) => {
 
 router.delete('/:id', (req, res) => {
     let id = req.params.id;
-    Services.removeService(id)
+    Cans.removeService(id)
         .then((del) => {
             res.status(200).json({message: 'service deleted'})
         })
