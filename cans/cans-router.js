@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const Cans = require('./cans-model.js');
 const restricted = require('../utils/restricted-endpoint.js');
+const { whereNotExists } = require('../database/db-config.js');
+const { json } = require('express');
 
 //api/services
 
@@ -12,9 +14,17 @@ router.get('/test', restricted, (req, res) => {
 })
 
 //returns a list of services for the user specified in the params. Vehicle ID is supplied so they can be mapped through on the front end to match the appropriate vehicle
+
+
+router.get('/all-cans', restricted, (req, res) => {
+    Cans.allCans()
+        .then(allCans => {
+            res.status(200).json(allCans)
+        })
+})
+
 router.get('/:id', restricted, (req, res) => {
     const { id } = req.params;
-
     Cans.findCanById(id)
         .then(can => {
             res.status(200).json(can)
@@ -22,65 +32,41 @@ router.get('/:id', restricted, (req, res) => {
         .catch(err => res.send(err))
 })
 
-router.get('/all', restricted, (req, res) => {
-    console.log('allCans called')
-    Cans.allCans()
-        .then(can => {
-            res.status(200).json(can)
+router.get('/user-cans/:id', restricted, (req, res) => {
+    const { id } = req.params;
+    Cans.findUserCans(id)
+        .then(userCans => {
+            res.status(200).json(userCans)
         })
         .catch(err => res.send(err))
 })
 
 
-router.post('/', restricted, async (req, res) => {
-    let serviceName = req.body.service_name;
-    let serviceDate = req.body.service_date;
-    let serviceMileage = req.body.service_mileage;
-    let nextServiceMileage = req.body.next_service_mileage;
-    let nextServiceDate = req.body.next_service_date;
-    let serviceNotes = req.body.service_notes;
+router.post('/new-can/:id', restricted, (req, res) => {
+    let user_id = req.body.user_id
+    let can_name = req.body.can_name;
+    let can_text = req.body.can_text;
+ 
 
-    let serviceDetails = {
-        'service_name': serviceName,
-        'service_date': serviceDate,
-        'service_mileage': serviceMileage,
-        'next_service_date': nextServiceDate,
-        'next_service_mileage': nextServiceMileage,
-        'service_notes': serviceNotes
-    }
-    let vehicle_id = req.body.vehicle_id;
-    let user_id = req.body.user_id;
-
-    const savedService = await Cans.addServices(serviceDetails)
-    
-    const serviceRelation = {
-        user_id: user_id,
-        vehicle_id: vehicle_id,
-        service_id: savedService.id
+    let can_details = {
+        'user_id': user_id,
+        'can_name': can_name,
+        'can_text': can_text
     }
 
-    const savedRelation = await Cans.addServiceRelation(serviceRelation)
-    
-    try {
-        if (savedRelation) {
-            res.status(201).json({serviceAdded: savedService, savedRelation: savedRelation })
-        } else {
-            res.status(500).json({message: 'server error from services router, vehicle not added'})
-            console.log(error)
-        }
-        
-        
-        
-    } catch (err) {
-        next({apiCode:500, apiMessage:'error adding service from service router', ...err})
-    }
+    Cans.addCans(can_details)
+        .then(newCan => {
+            res.status(201).json(newCan)
+        })
+        .catch(err => res.send(err))
 })
 
-router.delete('/:id', (req, res) => {
+
+router.delete('/delete-can/:id', (req, res) => {
     let id = req.params.id;
-    Cans.removeService(id)
+    Cans.removeCan(id)
         .then((del) => {
-            res.status(200).json({message: 'service deleted'})
+            res.status(200).json({message: 'can deleted'})
         })
         .catch((err) => {
             console.log(err)
@@ -89,5 +75,24 @@ router.delete('/:id', (req, res) => {
 
 })
 
+router.put('/update-can/:id', (req, res) => {
+    let id = req.params.id;
+    let can_name = req.body.can_name;
+    let can_text = req.body.can_text;
+    
+    let can = {
+        'id': id,
+        'can_name': can_name,
+        'can_text': can_text
+    }
+    Cans.updateCan(can)
+        .then((newCan) => {
+            res.status(200).json(newCan)
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(500).json({message: 'server error', ...err})
+        })
+})
 
 module.exports = router;

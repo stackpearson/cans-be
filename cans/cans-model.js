@@ -10,12 +10,18 @@ function findCans(id) {
 }
 
 function allCans() {
-    console.log('allCans Called')
+    console.log('allCans called')
     return db('cans')
 }
 
 function findCanById(id) {
+    // console.log('findCansById called')
     return db('cans').where({ id }).first()
+}
+
+function findUserCans(id) {
+    return db('cans as c')
+        .where('c.user_id', '=', `${id}`)
 }
 
 async function addCans(can) {
@@ -27,34 +33,26 @@ async function addCans(can) {
     }
 }
 
-// async function addServiceRelation(serviceRelation) {
-//    try {
-//     // const service =  await db('user_vehicles').where('user_vehicles.vehicle_id', '=', `${serviceRelation.vehicle_id}`).update({service_id: `${serviceRelation.service_id}`})
-//     const [id] = await db('user_vehicles').insert(serviceRelation, 'id')
-//     return findRelationById(id)
-//     // console.log(service)
-//    } catch (error) {
-//        throw error;
-//    } 
-// }
+async function removeCan(id) {
+    try {
+        return db('cans')
+            .where({ id })
+            .del();
+    } catch (error) {
+       throw error; 
+    }
 
-// async function removeService(id) {
-//     try {
-//         await removeServiceRelation(id)
-//         return db('user_services')
-//             .where({ id })
-//             .del();
-//     } catch (error) {
-//        throw error; 
-//     }
+}
 
-// }
+async function updateCan(can) {
+    try {
+        const updatedCan = await db('cans as c').where('c.id', '=', can.id).update(can)
+        return findCanById(can.id)
+    } catch(error) {
+        throw error;
+    }
+}
 
-// function removeServiceRelation(id) {
-//     return db('user_vehicles')
-//         .where('service_id', '=', `${id}`)
-//         .del();
-// }
 
 
 
@@ -64,5 +62,8 @@ module.exports = {
     findCans,
     findCanById,
     addCans,
-    allCans
+    allCans,
+    findUserCans,
+    removeCan,
+    updateCan
 }

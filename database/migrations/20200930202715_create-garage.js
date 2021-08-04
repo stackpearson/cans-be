@@ -12,7 +12,8 @@ exports.up = function(knex) {
       
       .createTable('cans', tbl => {
         tbl.increments();
-        tbl.integer('can_id')
+        tbl.integer('user_id')
+          .notNullable();
         tbl.string('can_name', 128)
             .notNullable();
         tbl.string('can_text')
