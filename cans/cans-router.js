@@ -16,8 +16,8 @@ router.get('/test', restricted, (req, res) => {
 
 router.get('/all-cans', restricted, (req, res) => {
     Cans.allCans()
-        .then(userCans => {
-            res.status(200).json(userCans)
+        .then(allCans => {
+            res.status(200).json(allCans)
         })
 })
 
@@ -26,6 +26,15 @@ router.get('/:id', restricted, (req, res) => {
     Cans.findCanById(id)
         .then(can => {
             res.status(200).json(can)
+        })
+        .catch(err => res.send(err))
+})
+
+router.get('/user-cans/:id', restricted, (req, res) => {
+    const { id } = req.params;
+    Cans.findUserCans(id)
+        .then(userCans => {
+            res.status(200).json(userCans)
         })
         .catch(err => res.send(err))
 })

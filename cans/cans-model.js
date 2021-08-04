@@ -19,6 +19,11 @@ function findCanById(id) {
     return db('cans').where({ id }).first()
 }
 
+function findUserCans(id) {
+    return db('cans as c')
+        .where('c.user_id', '=', `${id}`)
+}
+
 async function addCans(can) {
     try {
         const [id] = await db('cans').insert(can, 'id');
@@ -65,5 +70,6 @@ module.exports = {
     findCans,
     findCanById,
     addCans,
-    allCans
+    allCans,
+    findUserCans
 }
