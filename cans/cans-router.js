@@ -32,12 +32,9 @@ router.get('/:id', restricted, (req, res) => {
 
 
 router.post('/', restricted, async (req, res) => {
-    let serviceName = req.body.service_name;
-    let serviceDate = req.body.service_date;
-    let serviceMileage = req.body.service_mileage;
-    let nextServiceMileage = req.body.next_service_mileage;
-    let nextServiceDate = req.body.next_service_date;
-    let serviceNotes = req.body.service_notes;
+    let can_name = req.body.can_name;
+    let can_text = req.body.can_text;
+ 
 
     let serviceDetails = {
         'service_name': serviceName,
