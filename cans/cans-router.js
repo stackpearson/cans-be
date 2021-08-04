@@ -43,7 +43,7 @@ router.get('/user-cans/:id', restricted, (req, res) => {
 
 
 router.post('/new-can/:id', restricted, (req, res) => {
-    let user_id = req.body.user_id
+    let user_id = req.params.id;
     let can_name = req.body.can_name;
     let can_text = req.body.can_text;
  
