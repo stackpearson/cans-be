@@ -4,13 +4,29 @@ const restricted = require('../utils/restricted-endpoint.js');
 
 //api/services
 
+router.get('/test', restricted, (req, res) => {
+    let test = {
+        test: "test"
+    }
+    res.status(200).json(test)
+})
+
 //returns a list of services for the user specified in the params. Vehicle ID is supplied so they can be mapped through on the front end to match the appropriate vehicle
 router.get('/:id', restricted, (req, res) => {
     const { id } = req.params;
 
-    Cans.findCans(id)
-        .then(services => {
-            res.status(200).json(services)
+    Cans.findCanById(id)
+        .then(can => {
+            res.status(200).json(can)
+        })
+        .catch(err => res.send(err))
+})
+
+router.get('/all', restricted, (req, res) => {
+    console.log('allCans called')
+    Cans.allCans()
+        .then(can => {
+            res.status(200).json(can)
         })
         .catch(err => res.send(err))
 })

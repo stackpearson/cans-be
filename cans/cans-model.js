@@ -3,10 +3,15 @@ const db = require('../database/db-config.js');
 
 //Takes in a user_id provided via params, returns all services for that user_id
 function findCans(id) {
-    return db('user_cans as uc')
-        .join('cans as c', 'uc.ic')
-        .select()
-        .where('uv.user_id', '=', `${id}`)
+    return db('cans as c')
+        // .join('cans as c', 'uc.id')
+        // .select()
+        .where('c.id', '=', `${id}`)
+}
+
+function allCans() {
+    console.log('allCans Called')
+    return db('cans')
 }
 
 function findCanById(id) {
@@ -58,5 +63,6 @@ async function addCans(can) {
 module.exports = {
     findCans,
     findCanById,
-    addCans
+    addCans,
+    allCans
 }
