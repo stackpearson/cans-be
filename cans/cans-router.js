@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Cans = require('./cans-model.js');
 const restricted = require('../utils/restricted-endpoint.js');
 const { whereNotExists } = require('../database/db-config.js');
+const { json } = require('express');
 
 //api/services
 
@@ -74,5 +75,24 @@ router.delete('/delete-can/:id', (req, res) => {
 
 })
 
+router.put('/update-can/:id', (req, res) => {
+    let id = req.params.id;
+    let can_name = req.body.can_name;
+    let can_text = req.body.can_text;
+    
+    let can = {
+        'id': id,
+        'can_name': can_name,
+        'can_text': can_text
+    }
+    Cans.updateCan(can)
+        .then((newCan) => {
+            res.status(200).json(newCan)
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(500).json({message: 'server error', ...err})
+        })
+})
 
 module.exports = router;

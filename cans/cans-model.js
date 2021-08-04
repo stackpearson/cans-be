@@ -44,6 +44,15 @@ async function removeCan(id) {
 
 }
 
+async function updateCan(can) {
+    try {
+        const updatedCan = await db('cans as c').where('c.id', '=', can.id).update(can)
+        return findCanById(can.id)
+    } catch(error) {
+        throw error;
+    }
+}
+
 
 
 
@@ -55,5 +64,6 @@ module.exports = {
     addCans,
     allCans,
     findUserCans,
-    removeCan
+    removeCan,
+    updateCan
 }
