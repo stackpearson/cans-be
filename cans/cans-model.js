@@ -1,29 +1,23 @@
 const db = require('../database/db-config.js');
 
-
-//Takes in a user_id provided via params, returns all services for that user_id
-function findCans(id) {
-    return db('cans as c')
-        // .join('cans as c', 'uc.id')
-        // .select()
-        .where('c.id', '=', `${id}`)
-}
-
+// returns all cans in the db
 function allCans() {
     console.log('allCans called')
     return db('cans')
 }
 
+// returns a can by id
 function findCanById(id) {
-    // console.log('findCansById called')
     return db('cans').where({ id }).first()
 }
 
+// takes in a user_id & returns 
 function findUserCans(id) {
     return db('cans as c')
         .where('c.user_id', '=', `${id}`)
 }
 
+// stores a users can to the db
 async function addCans(can) {
     try {
         const [id] = await db('cans').insert(can, 'id');
@@ -33,6 +27,7 @@ async function addCans(can) {
     }
 }
 
+// takes in the can's id and removes it from the db if it exists
 async function removeCan(id) {
     try {
         return db('cans')
@@ -44,6 +39,7 @@ async function removeCan(id) {
 
 }
 
+// takes in updates to a user's can, updates changes in the db & returns the updated can object
 async function updateCan(can) {
     try {
         const updatedCan = await db('cans as c').where('c.id', '=', can.id).update(can)
@@ -53,13 +49,7 @@ async function updateCan(can) {
     }
 }
 
-
-
-
-
-
 module.exports = {
-    findCans,
     findCanById,
     addCans,
     allCans,
