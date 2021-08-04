@@ -27,6 +27,7 @@ function findUserCans(id) {
 async function addCans(can) {
     try {
         const [id] = await db('cans').insert(can, 'id');
+        console.log('addCan called')
         return findCanById(id);
     } catch (error) {
         throw error;
