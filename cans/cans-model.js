@@ -10,11 +10,12 @@ function findCans(id) {
 }
 
 function allCans() {
-    console.log('allCans Called')
+    console.log('allCans called')
     return db('cans')
 }
 
 function findCanById(id) {
+    // console.log('findCansById called')
     return db('cans').where({ id }).first()
 }
 

@@ -12,19 +12,18 @@ router.get('/test', restricted, (req, res) => {
 })
 
 //returns a list of services for the user specified in the params. Vehicle ID is supplied so they can be mapped through on the front end to match the appropriate vehicle
-router.get('/:id', restricted, (req, res) => {
-    const { id } = req.params;
 
-    Cans.findCanById(id)
-        .then(can => {
-            res.status(200).json(can)
+
+router.get('/all-cans', restricted, (req, res) => {
+    Cans.allCans()
+        .then(userCans => {
+            res.status(200).json(userCans)
         })
-        .catch(err => res.send(err))
 })
 
-router.get('/all', restricted, (req, res) => {
-    console.log('allCans called')
-    Cans.allCans()
+router.get('/:id', restricted, (req, res) => {
+    const { id } = req.params;
+    Cans.findCanById(id)
         .then(can => {
             res.status(200).json(can)
         })
